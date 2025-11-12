@@ -1,0 +1,22 @@
+{
+  "name": "commit-ai",
+  "version": "1.0.0",
+  "description": "AI-powered commit message generator",
+  "main": "src/index.js",
+  "bin": {
+    "commitai": "./bin/commitai.js"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "node ./bin/commitai.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^14.0.2",
+    "dotenv": "^17.2.3",
+    "inquirer": "^12.11.0"
+  }
+}
