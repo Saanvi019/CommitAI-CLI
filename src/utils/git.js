@@ -18,3 +18,16 @@ export function makeCommit(message) {
     console.error("❌ Commit failed:", err.message);
   }
 }
+
+// 🧠 NEW: Get a list of changed files (staged only)
+export function getChangedFiles() {
+  try {
+    const files = execSync("git diff --cached --name-only", { encoding: "utf-8" })
+      .split("\n")
+      .filter(Boolean);
+    return files;
+  } catch (err) {
+    console.error("❌ Error getting changed files:", err.message);
+    return [];
+  }
+}
