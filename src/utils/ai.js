@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { getChangedFiles } from "./git.js"; // <-- make sure this exists in src/utils/git.js
+import { getChangedFiles } from "./git.js";
 
 dotenv.config();
 
@@ -15,160 +15,209 @@ export async function generateCommitMessages(diff) {
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-  // 🧩 Get list of changed files for more context
   const files = getChangedFiles();
   const filesList = files.length ? files.join(", ") : "unknown files";
 
   const prompt = `
-You are an expert software engineer writing highly precise, conventional git commit messages.
+You are an expert software engineer writing **a single, precise, conventional git commit message** 
+that summarizes all the following code changes.
 
-Below is a list of changed files and their diff.
-Use both to craft commit messages that clearly describe *what changed and where*.
-
-Each message should:
-- Include the filename or module name if relevant.
-- Be short (under 100 characters).
-- Use standard conventional commit prefixes.
+Generate **three stylistic variations** of the same commit message:
+1. Concise — short and minimal, ideal for quick commits.
+2. Descriptive — adds brief context (what and why).
+3. Formal — polished and professional, suitable for changelogs.
 
 ---
 
-### Examples
+### ✅ STYLE GUIDELINES
 
-# --- Feature Commits (feat) ---
-- "feat(auth.js): add JWT authentication middleware"
-- "feat(api.js): introduce new GET /users endpoint"
-- "feat(dashboard.jsx): implement user analytics chart"
-- "feat(app.js): add dark mode toggle"
-- "feat(config.js): support environment variables via dotenv"
-- "feat(profile.js): add profile picture upload functionality"
-- "feat(search.js): implement fuzzy search for product list"
-- "feat(server.js): add compression middleware for performance"
-- "feat(notification.js): add push notification support"
-- "feat(routes/user.js): add password reset route"
-- "feat(db/schema.sql): create users table with constraints"
+1. Follow **Conventional Commit Format**:
+   \`<type>(<scope>): <description>\`
 
-# --- Fix Commits (fix) ---
-- "fix(auth.js): handle expired token edge case"
-- "fix(config.js): correct dotenv import path"
-- "fix(api.js): prevent null pointer in login handler"
-- "fix(server.js): resolve crash when port already in use"
-- "fix(utils/logger.js): fix missing timestamp in logs"
-- "fix(router.js): correct route order for 404 handling"
-- "fix(package.json): correct dependency version mismatch"
-- "fix(index.html): resolve broken favicon link"
-- "fix(css/main.css): fix button alignment in mobile view"
-- "fix(build.js): fix incorrect output path for bundle"
+   Allowed types:
+   - feat, fix, refactor, docs, style, test, perf, build, ci, chore, revert
 
-# --- Refactor Commits (refactor) ---
-- "refactor(index.js): import dotenv for environment configuration"
-- "refactor(api.js): extract middleware into separate module"
-- "refactor(utils/config.js): simplify key loading logic"
-- "refactor(helpers/date.js): replace moment with native Date"
-- "refactor(app.js): split express routes into separate files"
-- "refactor(models/user.js): migrate schema to TypeScript"
-- "refactor(server.js): improve async/await readability"
-- "refactor(git.js): use async exec instead of sync exec"
-- "refactor(cli.js): streamline command registration logic"
-- "refactor(db.js): replace callbacks with promises"
-
-# --- Documentation Commits (docs) ---
-- "docs(README.md): add setup instructions for new contributors"
-- "docs(README.md): update installation steps for Windows"
-- "docs(CHANGELOG.md): add 1.0.0 release notes"
-- "docs(CONTRIBUTING.md): clarify pull request process"
-- "docs(API.md): document new /auth/login endpoint"
-- "docs(README.md): add usage examples for CLI commands"
-- "docs(FAQ.md): add troubleshooting section for setup"
-- "docs(env.md): explain environment variable configuration"
-- "docs(index.html): update meta description for SEO"
-- "docs(README.md): remove deprecated commands section"
-
-# --- Style Commits (style) ---
-- "style(app.css): fix padding in hero section"
-- "style(index.html): format HTML structure properly"
-- "style(utils.js): apply prettier formatting"
-- "style(config.json): sort keys alphabetically"
-- "style(components/Button.jsx): adjust border radius"
-- "style(main.css): improve typography and spacing"
-- "style(navbar.jsx): align logo and menu items"
-- "style(theme.css): fix color contrast in dark mode"
-- "style(index.js): remove extra semicolons"
-- "style(.eslintrc): add rules for import sorting"
-
-# --- Test Commits (test) ---
-- "test(auth.test.js): add unit test for expired token"
-- "test(api.test.js): cover user registration endpoint"
-- "test(router.test.js): test 404 response"
-- "test(config.test.js): ensure dotenv loads variables"
-- "test(db.test.js): mock MongoDB connection"
-- "test(app.test.js): verify API health check"
-- "test(login.test.js): validate password reset flow"
-- "test(helpers.test.js): test string utility functions"
-- "test(cli.test.js): test commit message generation"
-- "test(middleware.test.js): add error handler tests"
-
-# --- Performance Commits (perf) ---
-- "perf(router.js): optimize route matching with regex"
-- "perf(app.js): cache user data for faster load"
-- "perf(db.js): add index for user email lookup"
-- "perf(api.js): reduce redundant database queries"
-- "perf(utils.js): memoize expensive function results"
-
-# --- Build Commits (build) ---
-- "build(webpack.config.js): enable source maps for development"
-- "build(package.json): bump dependencies to latest"
-- "build(eslint): configure lint-staged pre-commit hook"
-- "build(vite.config.js): optimize build for production"
-- "build(ci.yml): add node 20 support in CI pipeline"
-
-# --- CI Commits (ci) ---
-- "ci(github-actions.yml): add lint step to CI pipeline"
-- "ci(dockerfile): add health check endpoint"
-- "ci(circleci.yml): split jobs into build and deploy"
-- "ci(jenkinsfile): add test coverage threshold"
-- "ci(github-actions): update cache key for node_modules"
-
-# --- Chore Commits (chore) ---
-- "chore(deps): install @google/generative-ai dependency"
-- "chore(package.json): remove unused dependencies"
-- "chore(config.js): rename env variable for clarity"
-- "chore(repo): update .gitignore for node_modules"
-- "chore(env): add sample .env.example file"
-- "chore(scripts): create postinstall script for setup"
-- "chore(logger.js): improve log formatting"
-- "chore(readme): update badges and shields"
-- "chore(lint): fix lint errors across project"
-- "chore(format): run prettier across codebase"
-
-# --- Revert Commits (revert) ---
-- "revert(server.js): remove unnecessary console.log statements"
-- "revert(package.json): undo dependency version bump"
-- "revert(auth.js): rollback authentication middleware change"
+2. Scope = file/module name or general area (auth, api, config, ui, etc.)
+3. Keep it specific and meaningful — describe *intent* and *effect*.
+4. Avoid filler words like “updated code”, “minor changes”, “fixed stuff”.
+5. Each tone should follow this structure:
+   - **Concise:** ≤ 70 characters
+   - **Descriptive:** ≤ 100 characters
+   - **Formal:** ≤ 120 characters
+6. Return ONLY a JSON array:
+   [
+     {"tone": "concise", "message": "..."},
+     {"tone": "descriptive", "message": "..."},
+     {"tone": "formal", "message": "..."}
+   ]
 
 ---
 
-### Rules
-1. Use the format: type(file): concise summary of what changed.
-2. Focus on what *actually changed* — be concrete.
-3. Include filenames or functions where possible.
-4. Keep messages under 100 characters.
-5. Use conventional commit prefixes:
-   feat, fix, refactor, docs, style, test, perf, build, ci, chore, revert.
-6. Return **only** a JSON array like:
+### 🧠 EXAMPLES (70+)
 
-[
-  {"message": "refactor(index.js): import dotenv for environment configuration"},
-  {"message": "fix(config.js): handle missing API key error"},
-  {"message": "docs(README.md): add setup instructions"}
-]
+# Feature commits (feat)
+- feat(auth): add JWT authentication middleware
+- feat(api): introduce user profile endpoints
+- feat(ui): implement dark mode toggle
+- feat(config): load environment variables using dotenv
+- feat(dashboard): add charts for analytics overview
+- feat(payment): integrate Stripe for transactions
+- feat(router): support nested dynamic routes
+- feat(editor): enable markdown preview feature
+- feat(cli): add --init flag for quick project setup
+- feat(upload): support multiple file uploads
+- feat(settings): add user timezone preference
+- feat(notifications): implement email alert system
+- feat(mobile): add responsive layout for smaller screens
+- feat(theme): implement theme switcher using local storage
+- feat(search): add fuzzy search for user list
+- feat(chat): add typing indicator feature
+
+# Fix commits (fix)
+- fix(api): handle null user response gracefully
+- fix(auth): resolve invalid token error
+- fix(ui): correct button alignment on mobile
+- fix(router): prevent 404 on refresh for nested routes
+- fix(config): correct .env variable parsing
+- fix(db): close Mongo connection on process exit
+- fix(payment): handle failed transaction retries
+- fix(session): prevent session timeout during activity
+- fix(css): fix overlapping modals on smaller screens
+- fix(logging): avoid duplicate console outputs
+- fix(build): fix path issue for bundled assets
+- fix(form): validate empty email fields correctly
+- fix(upload): resolve memory leak in image upload handler
+- fix(theme): retain selected theme after reload
+- fix(deploy): correct environment path in CI script
+
+# Refactor commits (refactor)
+- refactor(auth): simplify JWT token generation
+- refactor(ui): modularize navbar and sidebar components
+- refactor(api): replace callbacks with async/await
+- refactor(config): extract shared constants
+- refactor(db): optimize query performance
+- refactor(cli): streamline command registration logic
+- refactor(utils): remove duplicate helper functions
+- refactor(core): split monolithic function into smaller ones
+- refactor(server): improve error handling and structure
+- refactor(store): clean up Redux action creators
+- refactor(router): simplify route declaration format
+- refactor(cache): use Map for better performance
+- refactor(hooks): migrate from class to functional components
+- refactor(http): wrap axios with unified error layer
+- refactor(build): reorganize webpack config for clarity
+
+# Docs commits (docs)
+- docs(readme): add setup instructions
+- docs(api): document /auth/login endpoint
+- docs(contributing): clarify PR process
+- docs(changelog): update release notes for v1.2
+- docs(env): explain environment variable usage
+- docs(architecture): describe module structure
+- docs(tutorial): add getting-started section
+- docs(readme): fix broken badge URLs
+- docs(api): update response schema documentation
+- docs(readme): include new feature examples
+- docs(security): add password handling policy
+- docs(readme): add commitai usage guide
+- docs(cli): document --dry-run flag
+- docs(readme): add command examples for Windows/Linux
+
+# Style commits (style)
+- style(ui): fix spacing and padding in card layout
+- style(css): unify font sizes across components
+- style(theme): adjust dark mode contrast
+- style(readme): format markdown headings
+- style(navbar): fix logo alignment
+- style(button): improve hover animation
+- style(code): apply prettier formatting
+- style(footer): adjust link colors
+- style(layout): increase section spacing
+- style(css): clean unused class selectors
+
+# Test commits (test)
+- test(auth): add token expiry test
+- test(api): add integration test for GET /users
+- test(ui): test dark mode toggle functionality
+- test(utils): cover edge cases for formatter
+- test(router): add unit test for protected route
+- test(build): verify webpack build output
+- test(cli): ensure command parser works correctly
+- test(config): test dotenv loading failure
+- test(login): add form validation test
+- test(performance): benchmark DB query time
+
+# Performance commits (perf)
+- perf(db): add index for faster user lookup
+- perf(api): cache frequent GET responses
+- perf(ui): lazy load large image assets
+- perf(router): debounce navigation handler
+- perf(store): memoize computed values
+- perf(auth): reduce token validation overhead
+- perf(build): optimize chunk splitting
+- perf(server): compress response payloads
+- perf(search): implement result pagination
+- perf(logging): batch write logs to disk
+
+# Build commits (build)
+- build(webpack): enable source maps in dev
+- build(ci): update node version to 20
+- build(package): bump dependencies
+- build(lint): configure pre-commit hook
+- build(vite): optimize build pipeline
+- build(eslint): enforce code formatting rules
+- build(babel): enable class properties plugin
+- build(docker): add production Dockerfile
+- build(jest): configure code coverage thresholds
+- build(npm): prepare package for publishing
+
+# CI commits (ci)
+- ci(github): add test and lint workflow
+- ci(circleci): split build and deploy jobs
+- ci(jenkins): add static analysis stage
+- ci(docker): enable image caching
+- ci(actions): update checkout version
+- ci(coverage): integrate codecov reporting
+- ci(deploy): configure staging deploy pipeline
+- ci(release): automate changelog generation
+
+# Chore commits (chore)
+- chore(deps): update @google/generative-ai package
+- chore(repo): clean up unused files
+- chore(config): rename environment variables
+- chore(scripts): add postinstall setup
+- chore(lint): fix lint errors
+- chore(format): run prettier across all files
+- chore(env): add sample .env.example
+- chore(logger): simplify log output
+- chore(dev): add nodemon for local development
+- chore(cleanup): remove deprecated code paths
+
+# Revert commits (revert)
+- revert(auth): rollback token validation change
+- revert(api): revert broken endpoint update
+- revert(ui): undo dark mode layout regression
+- revert(config): revert dotenv import
+- revert(router): undo async navigation refactor
+- revert(server): revert error middleware refactor
 
 ---
 
-### Changed Files
+### CHANGED FILES
 ${filesList}
 
-### Git Diff
+### GIT DIFF
 ${diff.slice(0, 4000)}
+
+Now — analyze these changes and return three stylistic variants of ONE smart, summary commit message 
+that best describes what the developer did overall.
+
+### Output Format
+[
+  {"tone": "concise", "message": "..."},
+  {"tone": "descriptive", "message": "..."},
+  {"tone": "formal", "message": "..."}
+]
 `;
 
 
@@ -176,12 +225,12 @@ ${diff.slice(0, 4000)}
     const result = await model.generateContent(prompt);
     let text = result.response.text().trim();
 
-    // 🧠 If wrapped in Markdown code block → remove ```json ... ```
+    // Handle Markdown wrapping
     if (text.startsWith("```")) {
       text = text.replace(/```json|```/g, "").trim();
     }
 
-    // Try parsing JSON output safely
+    // Parse the JSON safely
     const parsed = JSON.parse(text);
     return parsed.map((item, i) => ({ id: i + 1, message: item.message }));
   } catch (err) {
