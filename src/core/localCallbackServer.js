@@ -29,92 +29,84 @@ res.end(`
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #0c0f14;
       font-family: "Inter", system-ui, sans-serif;
-      color: #e2e8f0;
+      color: #f5f5f5;
+      background: linear-gradient(#3d260b, #000000);
       overflow: hidden;
+      position: relative;
+    }
+
+    /* Soft ambient vignette glow */
+    .glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(
+        circle,
+        rgba(255, 198, 135, 0.15),
+        rgba(0, 0, 0, 0)
+      );
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      filter: blur(80px);
+      z-index: 0;
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 40px;
+      position: relative;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 42px 40px;
       border-radius: 18px;
       width: 380px;
       text-align: center;
-      animation: fadeIn 0.5s ease-out;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      box-shadow: 0 12px 55px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.6s ease-out;
     }
 
     @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h2 {
+      font-size: 28px;
       font-weight: 600;
       margin-bottom: 10px;
-      letter-spacing: -0.5px;
+      background: linear-gradient(to bottom, #ffffff, #d4c2a4);
+      -webkit-background-clip: text;
+      color: transparent;
     }
 
     .subtext {
       font-size: 15px;
-      opacity: 0.65;
-    }
-
-    .btn {
-      margin-top: 25px;
-      padding: 12px 20px;
-      text-decoration: none;
-      display: inline-block;
-      background: linear-gradient(135deg, #3b82f6, #6366f1);
-      color: white;
-      font-size: 15px;
-      font-weight: 500;
-      border-radius: 10px;
-      box-shadow: 0 0 18px rgba(99, 102, 241, 0.4);
-      transition: 0.25s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 25px rgba(99, 102, 241, 0.55);
-    }
-
-    .timer {
-      margin-top: 15px;
-      font-size: 13px;
-      opacity: 0.5;
+      opacity: 0.75;
+      line-height: 1.6;
+      margin-top: 6px;
     }
   </style>
-
-  <script>
-    // Auto-close window after 3 seconds
-    setTimeout(() => {
-      window.close();
-    }, 3000);
-
-    // Redirect to docs as fallback
-    setTimeout(() => {
-      window.location.href = "https://commitai.dev/docs";
-    }, 3000);
-  </script>
-
 </head>
 
 <body>
+
+  <div class="glow"></div>
+
   <div class="card">
     <h2>Login Successful</h2>
-    <p class="subtext">You're now authenticated. Return to your terminal.</p>
-
-    <a href="https://commitai.dev/docs" class="btn">Go to Documentation</a>
-
-    <div class="timer">This window will close in 3 seconds…</div>
+    <p class="subtext">
+      You’re now authenticated.<br />
+      You can close this page anytime.
+    </p>
   </div>
+
 </body>
 </html>
+
+
 `);
 
 
