@@ -1,5 +1,5 @@
 
-
+import fetch from "node-fetch";
 import { getChangedFiles } from "./git.js";
 import { readConfig } from "./config.js";
 
@@ -38,7 +38,10 @@ export async function generateCommitMessages(diff) {
       console.error("❌ Backend error:", data.error);
       return [{ id: 1, message: "chore: fallback commit message" }];
     }
-
+if (res.status === 429) {
+  console.log(chalk.red(`❌ ${data.error}`));
+  return null;
+}
     return data.suggestions.map((s, i) => ({
       id: i + 1,
       message: s.message

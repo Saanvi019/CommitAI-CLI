@@ -7,13 +7,16 @@
   },
   "type": "module",
   "main": "./bin/commitai.js",
+  "main": "./bin/commitai.js",
   "scripts": {
     "start": "node ./bin/commitai.js",
+    "dev": "node --watch ./bin/commitai.js"
     "dev": "node --watch ./bin/commitai.js"
   },
   "files": [
     "bin",
     "src",
+    "README.md"
     "README.md"
   ],
   "keywords": [
@@ -40,8 +43,8 @@
     "commander": "^14.0.2",
     "dotenv": "^17.2.3",
     "inquirer": "^12.11.0",
-    "open": "^10.2.0",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "open": "^10.2.0"
   },
   "engines": {
     "node": ">=18.0.0"
