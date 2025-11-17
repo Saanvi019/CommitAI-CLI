@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import { getChangedFiles } from "./git.js";
 import { readConfig } from "./config.js";
 
-  const API_BASE= process.env.API_BASE || "https://commitai-backend.onrender.com";
+  const API_BASE="https://commitai-backend.onrender.com";
 
 export async function generateCommitMessages(diff) {
   // 1. Load token

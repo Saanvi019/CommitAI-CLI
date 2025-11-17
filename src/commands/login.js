@@ -2,7 +2,7 @@ import open from "open";
 import { writeConfig } from "../core/config.js";
 import { waitForToken } from "../core/localCallbackServer.js";
 
-const API_BASE = process.env.API_BASE  || "https://commitai-backend.onrender.com";
+const API_BASE ="https://commitai-backend.onrender.com";
 
 export default async function loginCommand() {
   console.log("🔑 Opening GitHub login...");
