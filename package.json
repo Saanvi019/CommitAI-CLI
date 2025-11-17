@@ -1,5 +1,5 @@
 {
-  "name": "smartcommit",
+  "name": "@rohaavi/commitai",
   "version": "1.0.0",
   "description": "CommitAI — AI-powered conventional commit message generator for developers.",
   "bin": {

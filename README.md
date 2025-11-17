@@ -8,7 +8,8 @@ Stop wasting time thinking about commit messages — let AI handle it.
 
 ## 📦 Installation
 
-npm install -g smartcommit
+npm install -g @rohaavi/commitai
+
 
 Requires Node.js 18+.
 
