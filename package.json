@@ -7,16 +7,13 @@
   },
   "type": "module",
   "main": "./bin/commitai.js",
-  "main": "./bin/commitai.js",
   "scripts": {
     "start": "node ./bin/commitai.js",
-    "dev": "node --watch ./bin/commitai.js"
     "dev": "node --watch ./bin/commitai.js"
   },
   "files": [
     "bin",
     "src",
-    "README.md"
     "README.md"
   ],
   "keywords": [
