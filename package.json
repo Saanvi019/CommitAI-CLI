@@ -6,7 +6,7 @@
     "commitai": "./bin/commitai.js"
   },
   "type": "module",
-  "main": "./bin/commitai.js",
+  
   "scripts": {
     "start": "node ./bin/commitai.js",
     "dev": "node --watch ./bin/commitai.js"
@@ -14,7 +14,8 @@
   "files": [
     "bin",
     "src",
-    "README.md"
+    "README.md",
+    "package.json"
   ],
   "keywords": [
     "commit",
@@ -30,10 +31,10 @@
   "homepage": "https://commitai.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Rohan-2601/commitai-cli.git"
+    "url": "https://github.com/Saanvi019/CommitAI-CLI"
   },
   "bugs": {
-    "url": "https://github.com/Rohan-2601/commitai-cli/issues"
+    "url": "https://github.com/Saanvi019/CommitAI-CLI/issues"
   },
   "dependencies": {
     "chalk": "^5.6.2",
