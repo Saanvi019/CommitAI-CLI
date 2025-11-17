@@ -8,8 +8,8 @@ Stop wasting time thinking about commit messages — let AI handle it.
 
 ## 📦 Installation
 
+npm install -g commitai-cli
 
-npm install -g @commitai/cli
 Requires Node.js 18+.
 
 🔑 Login (via GitHub)
