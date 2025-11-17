@@ -2,7 +2,7 @@ import open from "open";
 import { writeConfig } from "../core/config.js";
 import { waitForToken } from "../core/localCallbackServer.js";
 
-const API_BASE = process.env.COMMITAI_API_URL || "http://localhost:4000";
+const API_BASE = process.env.API_BASE  || "http://localhost:4000";
 
 export default async function loginCommand() {
   console.log("🔑 Opening GitHub login...");
