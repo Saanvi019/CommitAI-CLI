@@ -1,5 +1,5 @@
 {
-  "name": "@commitai/cli",
+  "name": "commitai-cli",
   "version": "1.0.0",
   "description": "CommitAI — AI-powered conventional commit message generator for developers.",
   "bin": {
